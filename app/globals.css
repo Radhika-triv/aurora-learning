@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+/* ── Design tokens ──────────────────────────────────────────────────────────
+   A single, calm dark palette. Surfaces are translucent so the fixed ambient
+   glow + grain (see body::before / ::after) reads through every tile.        */
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --color-canvas: oklch(0.155 0.013 274);
+  --color-surface: oklch(0.214 0.015 274);
+  --color-foreground: oklch(0.971 0.006 270);
+  --color-muted: oklch(0.74 0.022 274);
+  --color-faint: oklch(0.6 0.025 274);
+
+  --color-violet: oklch(0.72 0.17 292);
+  --color-cyan: oklch(0.82 0.12 212);
+  --color-emerald: oklch(0.81 0.15 158);
+  --color-amber: oklch(0.83 0.13 70);
+  --color-rose: oklch(0.74 0.17 12);
+
+  --radius-tile: 1.4rem;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Ambient gradient glow — fixed so it never participates in layout. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(48rem 36rem at 6% -10%, oklch(0.72 0.17 292 / 0.16), transparent 60%),
+      radial-gradient(42rem 32rem at 102% 2%, oklch(0.82 0.12 212 / 0.1), transparent 58%),
+      radial-gradient(46rem 30rem at 90% 110%, oklch(0.7 0.16 322 / 0.1), transparent 60%);
+  }
+
+  /* Fine film grain to break up the flat darkness. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection {
+    background: oklch(0.72 0.17 292 / 0.3);
+    color: oklch(0.99 0 0);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(1 0 0 / 0.08);
+    border: 2px solid transparent;
+    border-radius: 9999px;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(1 0 0 / 0.16);
+    background-clip: content-box;
+  }
+
+  /* Honour OS-level motion preferences for any CSS-driven animation.
+     (Framer Motion is handled separately via <MotionConfig reducedMotion>.) */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Shared tile surface: subtle top sheen + depth shadow. */
+  .bento-surface {
+    background:
+      linear-gradient(180deg, oklch(1 0 0 / 0.045), oklch(1 0 0 / 0) 22%),
+      oklch(0.214 0.015 274 / 0.62);
+    box-shadow:
+      inset 0 1px 0 0 oklch(1 0 0 / 0.04),
+      0 24px 48px -28px oklch(0 0 0 / 0.7);
+  }
+
+  /* Gradient hairline border, revealed on hover via opacity (no repaint of
+     the element box itself — purely an opacity transition). */
+  .glow-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      oklch(0.72 0.17 292 / 0.9),
+      oklch(0.82 0.12 212 / 0.55) 45%,
+      transparent 72%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background: oklch(1 0 0 / 0.05);
+  }
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.07), transparent);
+    animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  }
+}
+
+@utility no-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

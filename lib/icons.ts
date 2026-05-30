@@ -1,0 +1,75 @@
+import {
+  ArrowUpRight,
+  Atom,
+  Bell,
+  BookOpen,
+  Boxes,
+  BrainCircuit,
+  CalendarDays,
+  ChevronRight,
+  Clock,
+  Code2,
+  Compass,
+  Cpu,
+  Database,
+  Flame,
+  GitBranch,
+  GraduationCap,
+  Layers,
+  LayoutDashboard,
+  LineChart,
+  Network,
+  Play,
+  Search,
+  ServerCog,
+  Settings,
+  Sparkles,
+  Target,
+  Trophy,
+  Users,
+  Workflow,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
+
+/**
+ * Explicit allow-list of icons. Resolving `icon_name` against a static map
+ * keeps the bundle tree-shakeable (vs. importing all of lucide-react) and
+ * guarantees a sensible fallback for unknown values from the database.
+ */
+const ICON_MAP: Record<string, LucideIcon> = {
+  ArrowUpRight,
+  Atom,
+  Bell,
+  BookOpen,
+  Boxes,
+  BrainCircuit,
+  CalendarDays,
+  ChevronRight,
+  Clock,
+  Code2,
+  Compass,
+  Cpu,
+  Database,
+  Flame,
+  GitBranch,
+  GraduationCap,
+  Layers,
+  LayoutDashboard,
+  LineChart,
+  Network,
+  Play,
+  Search,
+  ServerCog,
+  Settings,
+  Sparkles,
+  Target,
+  Trophy,
+  Users,
+  Workflow,
+  Zap,
+};
+
+export function resolveIcon(name: string): LucideIcon {
+  return ICON_MAP[name] ?? BookOpen;
+}
