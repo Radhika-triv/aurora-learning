@@ -6,10 +6,10 @@ import type { UpNextLesson, UserProfile } from "@/types";
  * goal stay consistent across every tile.
  */
 export const USER: UserProfile = {
-  name: "Radhika Sharma",
+  name: "Radhika Trivedi",
   firstName: "Radhika",
   role: "Software Engineering track",
-  initials: "RS",
+  initials: "RT",
   streakDays: 12,
   weeklyGoal: { completed: 4, target: 5 },
   focusMinutesToday: 95,
